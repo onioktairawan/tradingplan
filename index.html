@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Plan XAUUSD</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            position: relative;
+        }
+        h1 {
+            color: #4caf50;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+        }
+        .welcome-message {
+            font-size: 1.2rem;
+            text-align: center;
+            margin-bottom: 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .form-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 20px;
+            width: 80%;
+            text-align: left;
+        }
+        .form-container div {
+            flex: 1;
+            min-width: 150px;
+            max-width: 200px;
+        }
+        .form-container label {
+            margin-right: 10px;
+        }
+        .form-container input {
+            padding: 10px;
+            margin: 5px 0;
+            border: none;
+            border-radius: 5px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .form-container button {
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .form-container button:hover {
+            background-color: #45a049;
+        }
+        table {
+            width: 90%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #4caf50;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #4caf50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: rgba(30, 30, 30, 0.9);
+        }
+        tr:nth-child(odd) {
+            background-color: rgba(41, 41, 41, 0.9);
+        }
+        .watermark {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 14px;
+            color: #4caf50;
+            opacity: 0.7;
+        }
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #1e1e1e;
+            text-align: center;
+            font-size: 12px;
+            color: #4caf50;
+            padding: 10px 0;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* Responsif untuk perangkat dengan lebar maksimal 600px */
+        @media screen and (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .form-container {
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+            }
+
+            .form-container div {
+                min-width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .form-container input,
+            .form-container button {
+                width: 100%;
+            }
+
+            .table-container {
+                overflow-x: auto;
+                width: 100%;
+            }
+
+            table {
+                width: 100%;
+                table-layout: fixed;
+            }
+
+            th, td {
+                padding: 8px;
+                font-size: 0.9rem;
+            }
+
+            footer {
+                font-size: 0.9rem;
+                padding: 8px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Trading Plan XAUUSD</h1>
+    <div class="welcome-message">
+        Selamat datang di perencanaan trading Anda untuk XAUUSD!<br>
+        Mulailah perjalanan Anda menuju target profit dengan disiplin dan semangat. Konsistensi adalah kunci kesuksesan!
+    </div>
+    <div class="form-container">
+        <div>
+            <label for="modal">Modal Awal: </label>
+            <input type="number" id="modal" placeholder="Masukkan modal awal ($)" value="10">
+        </div>
+        <div>
+            <label for="target">Target Profit: </label>
+            <input type="number" id="target" placeholder="Masukkan target profit ($)" value="1000">
+        </div>
+        <div>
+            <label for="days">Durasi (Hari): </label>
+            <input type="number" id="days" placeholder="Jumlah hari" value="30">
+        </div>
+        <div>
+            <label for="risk">Risiko Per Trade (%): </label>
+            <input type="number" id="risk" placeholder="Persentase risiko" value="1">
+        </div>
+        <div class="button-container">
+            <button onclick="generatePlan()">Buat Rencana</button>
+            <button onclick="resetForm()">Reset</button>
+            <button onclick="exportToCSV()">Export to CSV</button>
+        </div>
+    </div>
+    <table id="tradingTable">
+        <thead>
+            <tr>
+                <th>Hari</th>
+                <th>Saldo Awal ($)</th>
+                <th>Lot Size</th>
+                <th>Target Harian (%)</th>
+                <th>Profit Harian ($)</th>
+                <th>Saldo Akhir ($)</th>
+                <th>Keterangan</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <footer>&copy; 2025 GEMPIFX. All rights reserved.</footer>
+
+    <script>
+        function generatePlan() {
+            const modal = parseFloat(document.getElementById('modal').value);
+            const target = parseFloat(document.getElementById('target').value);
+            const days = parseInt(document.getElementById('days').value);
+            const risk = parseFloat(document.getElementById('risk').value) / 100;
+
+            // Validasi input
+            if (modal <= 0 || target <= 0 || days <= 0 || risk <= 0) {
+                alert("Harap masukkan nilai yang valid untuk semua input.");
+                return;
+            }
+
+            const dailyTargetRate = Math.pow(target / modal, 1 / days) - 1;
+
+            const tableBody = document.querySelector('#tradingTable tbody');
+            tableBody.innerHTML = '';
+
+            let currentBalance = modal;
+
+            for (let day = 1; day <= days; day++) {
+                const dailyProfit = currentBalance * dailyTargetRate;
+                const newBalance = currentBalance + dailyProfit;
+
+                const riskPerTrade = currentBalance * risk; // Risiko berdasarkan persentase
+                const lotSize = Math.max((riskPerTrade / 10), 0.01).toFixed(2); // Risiko 10 pip, lot minimal 0.01
+
+                const row = document.createElement('tr');
+                row.innerHTML = `    
+                    <td>${day}</td>
+                    <td>${currentBalance.toFixed(2)}</td>
+                    <td>${lotSize}</td>
+                    <td>${(dailyTargetRate * 100).toFixed(2)}%</td>
+                    <td>${dailyProfit.toFixed(2)}</td>
+                    <td>${newBalance.toFixed(2)}</td>
+                    <td><input type="text" class="keterangan-input" placeholder="Masukkan keterangan"></td>
+                `;
+                tableBody.appendChild(row);
+
+                currentBalance = newBalance;
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('modal').value = '';
+            document.getElementById('target').value = '';
+            document.getElementById('days').value = '';
+            document.getElementById('risk').value = '';
+            document.querySelector('#tradingTable tbody').innerHTML = '';
+        }
+
+        function exportToCSV() {
+            const rows = document.querySelectorAll('#tradingTable tr');
+            let csvContent = '';
+
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td, th');
+                const rowData = Array.from(cells).map(cell => cell.textContent.trim());
+                csvContent += rowData.join(',') + '\n';
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'trading_plan_xauusd.csv';
+            link.click();
+        }
+    </script>
+</body>
+</html>
