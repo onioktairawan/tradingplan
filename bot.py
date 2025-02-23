@@ -15,7 +15,7 @@ API_ID = 23581804  # Ganti dengan API ID-mu
 API_HASH = "49fd7d9ac9aecb487c343a0c1156f8d2"  # Ganti dengan API HASH-mu
 
 # Token bot dari BotFather (PASTIKAN TOKEN BARU)
-BOT_TOKEN = "7783954036:AAGWsD-9G3BfnSPysEAKqN30OfiKonfTUV4"
+BOT_TOKEN = "7500495219:AAGiGwm4yFkH79jE_kpxTdHg4d2M8DKfKzE"
 
 # ID Channel sumber (format -100XXXXXXXXXX)
 CHANNEL_SOURCE_ID = -1002156702383  # ID channel sumber
